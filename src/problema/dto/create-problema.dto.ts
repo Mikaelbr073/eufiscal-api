@@ -3,6 +3,7 @@ export class CreateProblemaDto {
     fotoURL: string 
     fotoId: string
     cidadeID: number 
+    cidade: string 
     statusID: number 
     categoriaId: number
     timestamp: Date

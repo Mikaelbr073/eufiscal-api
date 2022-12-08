@@ -5,18 +5,30 @@ import { UpdateProblemaDto } from './dto/update-problema.dto';
 import { HistoricoProblema, Problema } from './entities/problema.entity';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
+import { CidadeService } from 'src/cidade/cidade.service';
 
 @Controller('problema')
 export class ProblemaController {
-  constructor(private readonly problemaService: ProblemaService, private readonly firebaseService: FirebaseService) {}
+  constructor(private readonly problemaService: ProblemaService, private readonly cidadeService: CidadeService, private readonly firebaseService: FirebaseService) {}
 
   @Post()
   create(@Body() createProblemaDto: CreateProblemaDto) {
     return this.firebaseService.getFotoUrl(createProblemaDto.fotoId).then( foto => {
       createProblemaDto.fotoURL = foto;
-      let problema = this.problemaService.create(createProblemaDto);
-      problema.then(x => this.problemaService.createHistorico({ id: x.id, statusID: x.statusID}));
-      return problema;
+      this.cidadeService.findAll({
+        where: {
+          nome: {
+            startsWith: createProblemaDto.cidade,
+            endsWith: createProblemaDto.cidade,
+            mode: 'insensitive'
+          }
+        }
+      }).then(cidade => {
+        createProblemaDto.cidadeID = cidade[0].id;
+        let problema = this.problemaService.create(createProblemaDto);
+        problema.then(x => this.problemaService.createHistorico({ id: x.id, statusID: x.statusID}));
+        return problema;
+      })
     });
   }
 
