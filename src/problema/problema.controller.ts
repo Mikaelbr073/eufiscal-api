@@ -18,7 +18,8 @@ export class ProblemaController {
       this.cidadeService.findAll({
         where: {
           nome: {
-            contains: createProblemaDto.cidade,
+            startsWith: createProblemaDto.cidade,
+            endsWith: createProblemaDto.cidade,
             mode: 'insensitive'
           }
         }
