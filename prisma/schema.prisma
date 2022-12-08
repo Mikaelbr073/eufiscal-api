@@ -38,13 +38,13 @@ model Problema {
   denunciaIrregular Boolean
   latitude Decimal
   longitude Decimal 
-  criadoEm DateTime 
+  criadoEm DateTime @default(now())
   atualizadoEm DateTime? @updatedAt
   removidoEm DateTime?
   categoria    Categoria    @relation(fields: [categoriaID], references: [id])
   categoriaID  Int
   status    Status    @relation(fields: [statusID], references: [id])
-  statusID  Int
+  statusID  Int   @default(1)
   cidade    Cidade    @relation(fields: [cidadeID], references: [id])
   cidadeID  Int
   historicos HistoricoProblema[]
